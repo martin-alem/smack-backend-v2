@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import loginRouter from "./routes/loginRoute.js";
+
 dotenv.config();
 
 const app: Express = express();
@@ -21,8 +23,11 @@ app.enable("trust proxy");
 app.use(cors(corsOptions));
 app.use(express.json());
 
+//Login Resource
+app.use("/api/v1/login", loginRouter);
+
 //Ping routes to check server status
-app.get("/ping", (req: Request, res: Response) => {
+app.get("/api/ping", (req: Request, res: Response) => {
   res.status(200).json({
     status: 200,
     message: "Server up and running",
