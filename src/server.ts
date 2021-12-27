@@ -1,4 +1,5 @@
 import express, { Request, Response, Express } from "express";
+import connectionToDatabase from "./database/connection.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -6,6 +7,8 @@ import dotenv from "dotenv";
 import loginRouter from "./routes/loginRoute.js";
 
 dotenv.config();
+
+connectionToDatabase();
 
 const app: Express = express();
 
