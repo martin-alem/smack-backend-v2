@@ -1,10 +1,7 @@
 import Logger from "./../utils/Logger.js";
 import mongoose, { ClientSession, Document } from "mongoose";
 
-export async function findOne(
-  model: mongoose.Model<any, {}, {}, {}>,
-  query: { [key: string]: any }
-): Promise<Document | undefined> {
+export async function findOne(model: mongoose.Model<any, {}, {}, {}>, query: { [key: string]: any }): Promise<Document | undefined> {
   try {
     const document: Document = await model.findOne(query);
     return document;
@@ -14,9 +11,7 @@ export async function findOne(
   }
 }
 
-export async function findAll(
-  model: mongoose.Model<any, {}, {}, {}>
-): Promise<Document[] | undefined> {
+export async function findAll(model: mongoose.Model<any, {}, {}, {}>): Promise<Document[] | undefined> {
   try {
     const document: Document[] = await model.find({});
     return document;
@@ -26,10 +21,7 @@ export async function findAll(
   }
 }
 
-export async function insert(
-  model: mongoose.Model<any, {}, {}, {}>,
-  data: { [key: string]: any }
-): Promise<any> {
+export async function insert(model: mongoose.Model<any, {}, {}, {}>, data: { [key: string]: any }): Promise<any> {
   try {
     const result = await model.create(data);
     return result;
@@ -39,11 +31,7 @@ export async function insert(
   }
 }
 
-export async function findAndUpdate(
-  model: mongoose.Model<any, {}, {}, {}>,
-  filter: { [key: string]: any },
-  data: { [key: string]: any }
-): Promise<Document | undefined> {
+export async function findAndUpdate(model: mongoose.Model<any, {}, {}, {}>, filter: { [key: string]: any }, data: { [key: string]: any }): Promise<Document | undefined> {
   try {
     const document: Document = await model.findOneAndUpdate(filter, data, { new: true });
     return document;
@@ -53,10 +41,7 @@ export async function findAndUpdate(
   }
 }
 
-export async function findAndDelete(
-  model: mongoose.Model<any, {}, {}, {}>,
-  filter: { [key: string]: any }
-) {
+export async function findAndDelete(model: mongoose.Model<any, {}, {}, {}>, filter: { [key: string]: any }) {
   try {
     const document: Document = await model.findOneAndDelete(filter);
     return document;
@@ -65,5 +50,3 @@ export async function findAndDelete(
     throw error;
   }
 }
-
-

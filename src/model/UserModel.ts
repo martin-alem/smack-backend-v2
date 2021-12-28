@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
     lastLoggedIn: {
       type: Date,
       required: false,
-      default: Date.now(),
+      default: new Date("January 1 1970 00:00:00"),
     },
     devices: {
       type: [],
