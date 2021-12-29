@@ -67,7 +67,7 @@ async function handleExistingUser(smackUser: SmackUser, req: Request, res: Respo
       } else {
         const lastLoggedIn = smackUser.twoFA.lastLoggedIn.toString();
         const diff = computeDateDiffInHours(lastLoggedIn);
-        if (diff <= 24) {
+        if (diff <= 2) {
           res.status(200).json({ status: "success", statusCode: 200, smackUser });
         } else {
           await handleTrustedDevice(smackUser, "", res);

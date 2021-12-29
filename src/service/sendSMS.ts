@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import Client from "twilio";
 import Logger from "./../utils/Logger.js";
 
@@ -5,6 +6,8 @@ interface SMSStatus {
   error: Error | null;
   status: string;
 }
+
+dotenv.config();
 
 const twilio = {
   accountSid: process.env.TWILIO_ACCOUNT_SID!,
@@ -16,7 +19,7 @@ const client = Client(twilio.accountSid, twilio.authToken);
 
 async function sendSMS(recipientPhone: string, message: string): Promise<SMSStatus> {
   try {
-    const result = await client.messages.create({
+    await client.messages.create({
       body: message,
       from: twilio.number,
       to: recipientPhone,
