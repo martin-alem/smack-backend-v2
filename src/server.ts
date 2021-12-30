@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import loginRouter from "./routes/loginRoute.js";
 import logoutRouter from "./routes/logoutRoute.js";
 import authorizeRouter from "./routes/authorizeRoute.js";
+import settingRouter from "./routes/settingRoute.js";
 
 dotenv.config();
 
@@ -36,6 +37,9 @@ app.use("/api/v1/logout", logoutRouter);
 
 //Authorize endpoint
 app.use("/api/v1/authorize", authorizeRouter);
+
+//Settings endpoint
+app.use("/api/v1/settings", settingRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {
