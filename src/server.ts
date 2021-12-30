@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 
 import loginRouter from "./routes/loginRoute.js";
 import logoutRouter from "./routes/logoutRoute.js";
+import authorizeRouter from "./routes/authorizeRoute.js";
 
 dotenv.config();
 
@@ -27,11 +28,14 @@ app.enable("trust proxy");
 app.use(cors(corsOptions));
 app.use(express.json());
 
-//Login Resource
+//Login endpoint
 app.use("/api/v1/login", loginRouter);
 
-//Logout Resource
+//Logout endpoint
 app.use("/api/v1/logout", logoutRouter);
+
+//Authorize endpoint
+app.use("/api/v1/authorize", authorizeRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {
