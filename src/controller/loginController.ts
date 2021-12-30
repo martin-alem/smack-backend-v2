@@ -61,6 +61,8 @@ async function handleExistingUser(smackUser: SmackUser, req: Request, res: Respo
   if (findSettingResult) {
     const is2FA = findSettingResult.get("settings")["twoFA"] as boolean;
     if (!is2FA) {
+      const accessToken = generateAccessToken(userId);
+      setCookie(res, "_access_token", accessToken);
       sendResponse(res, "success", response_code.SUCCESS, smackUser, success_codes.SLP);
     } else {
       const device = req.cookies["device"];
@@ -93,10 +95,7 @@ async function handleNewUser(googleUser: GoogleUser, res: Response, next: NextFu
   const newUser = await newUserTransaction(user);
 
   if (newUser) {
-    const JWT_SECRET: string = process.env.JWT_SECRET!;
-    const accessToken = jwt.sign({ user_id: newUser[0]["_id"] }, JWT_SECRET, {
-      expiresIn: config.JWT_EXP,
-    });
+    const accessToken = generateAccessToken(newUser[0]["_id"]);
     setCookie(res, "_access_token", accessToken);
     sendResponse(res, "success", response_code.CREATED, newUser[0], success_codes.SLP);
   } else {
@@ -160,6 +159,14 @@ async function createVerificationRecord(smackUser: SmackUser, verificationCode: 
     Logger.log("error", error as Error, import.meta.url);
     next(new ErrorHandler("Internal server error", response_code.INTERNAL_SERVER_ERROR, error_codes.ESE));
   }
+}
+
+function generateAccessToken(userId: string): string {
+  const JWT_SECRET: string = process.env.JWT_SECRET!;
+  const accessToken = jwt.sign({ userId }, JWT_SECRET, {
+    expiresIn: config.JWT_EXP,
+  });
+  return accessToken;
 }
 
 export default loginController;

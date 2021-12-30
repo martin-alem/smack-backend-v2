@@ -18,11 +18,13 @@ export const error_codes = {
 export const success_codes = {
   SLP: "SLP", // login successful
   SUD: "SUD", // unauthorized device
+  SSR: "SSR", // generic success
 };
 
 export const config = {
   LOGIN_DURATION: 24,
   JWT_EXP: "5h",
+  COOKIE_EXP: 5,
   CODE_LENGTH: 6,
   V_CODE_EXP: 5,
   V_MSG: "your smack verification code",

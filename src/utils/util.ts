@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { config } from "./magic.js";
 
 export function getFormattedDate(): string {
   const date = new Date();
@@ -6,10 +7,11 @@ export function getFormattedDate(): string {
 }
 
 export function setCookie(res: Response, key: string, value: string) {
+  const cookie_expires: number = config.COOKIE_EXP;
   res.cookie(key, value, {
-    expires: new Date(Date.now() + 1 * 3600000),
+    expires: new Date(Date.now() + cookie_expires * 3600000),
     httpOnly: true,
-    // domain: "localhost",
+    domain: "localhost",
     sameSite: "lax",
   });
 }
@@ -30,14 +32,6 @@ export function getCode(length: number): string {
   return code;
 }
 
-export function sendResponse(
-  res: Response,
-  status: string,
-  statusCode: number,
-  payload: any,
-  code: string
-) {
-  res
-    .status(statusCode)
-    .json({ status: status, statusCode: statusCode, payload: payload, code: code });
+export function sendResponse(res: Response, status: string, statusCode: number, payload: any, code: string) {
+  res.status(statusCode).json({ status: status, statusCode: statusCode, payload: payload, code: code });
 }
