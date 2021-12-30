@@ -29,3 +29,15 @@ export function getCode(length: number): string {
 
   return code;
 }
+
+export function sendResponse(
+  res: Response,
+  status: string,
+  statusCode: number,
+  payload: any,
+  code: string
+) {
+  res
+    .status(statusCode)
+    .json({ status: status, statusCode: statusCode, payload: payload, code: code });
+}
