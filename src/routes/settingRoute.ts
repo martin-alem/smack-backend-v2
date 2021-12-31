@@ -1,11 +1,13 @@
 import express, { Request, Response, Router, NextFunction } from "express";
 import ErrorHandler from "./../utils/ErrorHandler.js";
 import settingController from "./../controller/settingController.js";
+import updateSettingController from "./../controller/updateSettingController.js";
 import authMiddleware from "./../middleware/authMiddleware.js";
 
 const settingRouter: Router = express.Router();
 
 settingRouter.get("/:userId", [authMiddleware, settingController]);
+settingRouter.put("/:userId", [authMiddleware, updateSettingController]);
 
 settingRouter.use((error: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
   res.status(error.statusCode).json({
