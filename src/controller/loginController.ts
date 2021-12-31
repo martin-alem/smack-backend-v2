@@ -5,13 +5,13 @@ import { GoogleUser, SmackUser } from "./../types/interfaces";
 import verify from "../utils/verifyToken.js";
 import UserModel from "../model/UserModel.js";
 import SettingModel from "../model/SettingModel.js";
-import VerificationModel from "../model/VerificationModel.js";
-import { findOne, findAndUpdate, insert } from "./../service/query.js";
+import { findOne} from "./../service/query.js";
 import { newUserTransaction } from "./../service/transaction.js";
 import jwt from "jsonwebtoken";
 import { setCookie, computeDateDiffInHours, getCode, sendResponse } from "./../utils/util.js";
 import sendSMS from "./../service/sendSMS.js";
 import { config, error_codes, response_code, success_codes } from "../utils/magic.js";
+import createVerificationRecord from "../service/createVerificationRecord.js";
 
 async function loginController(req: Request, res: Response, next: NextFunction) {
   try {
@@ -115,49 +115,11 @@ async function handleTrustedDevice(smackUser: SmackUser, device: string, res: Re
     const message = `${verificationCode} ${config.V_MSG}. expires in ${config.V_CODE_EXP} minutes.`;
     const smsResult = await sendSMS(userPhone, message);
     if (!smsResult.error && smsResult.status === "success") {
-      await createVerificationRecord(smackUser, verificationCode, res, next);
+      await createVerificationRecord(smackUser._id, userPhone, verificationCode, res, next);
     } else {
       Logger.log("error", new Error("Could not send verification code"), import.meta.url);
       next(new ErrorHandler("Unable to send verification code", response_code.FORBIDDEN, error_codes.EUA));
     }
-  }
-}
-
-async function createVerificationRecord(smackUser: SmackUser, verificationCode: string, res: Response, next: NextFunction): Promise<void> {
-  try {
-    const result = await findOne(VerificationModel, {
-      userId: smackUser._id,
-    });
-    if (result) {
-      //already exists so just update code, number of verifications and lastUpdated
-      let newNumberOfVerifications = result.get("numberOfVerifications", Number) as number;
-      newNumberOfVerifications += 1;
-      const updateResult = await findAndUpdate(VerificationModel, { userId: smackUser._id }, { verificationCode, numberOfVerifications: newNumberOfVerifications, lastUpdated: Date.now() });
-      if (updateResult) {
-        sendResponse(res, "success", response_code.SUCCESS, null, success_codes.SUD);
-      } else {
-        Logger.log("error", new Error("Could not create verification record"), import.meta.url);
-        next(new ErrorHandler("Unable to create verification record", response_code.FORBIDDEN, error_codes.EUA));
-      }
-    } else {
-      const verificationRecord = {
-        userId: smackUser._id,
-        phoneNumber: smackUser.phoneNumber,
-        verificationCode: verificationCode,
-        numberOfVerifications: 1,
-        lastUpdated: Date.now(),
-      };
-      const creatResult = await insert(VerificationModel, verificationRecord);
-      if (creatResult) {
-        sendResponse(res, "success", response_code.SUCCESS, null, success_codes.SUD);
-      } else {
-        Logger.log("error", new Error("Could not create verification record"), import.meta.url);
-        next(new ErrorHandler("Unable to create verification record", response_code.FORBIDDEN, error_codes.EUA));
-      }
-    }
-  } catch (error) {
-    Logger.log("error", error as Error, import.meta.url);
-    next(new ErrorHandler("Internal server error", response_code.INTERNAL_SERVER_ERROR, error_codes.ESE));
   }
 }
 

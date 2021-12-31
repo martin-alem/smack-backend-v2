@@ -8,6 +8,7 @@ import loginRouter from "./routes/loginRoute.js";
 import logoutRouter from "./routes/logoutRoute.js";
 import authorizeRouter from "./routes/authorizeRoute.js";
 import settingRouter from "./routes/settingRoute.js";
+import getCodeRouter from "./routes/getCodeRoute.js";
 
 dotenv.config();
 
@@ -40,6 +41,9 @@ app.use("/api/v1/authorize", authorizeRouter);
 
 //Settings endpoint
 app.use("/api/v1/settings", settingRouter);
+
+//Code endpoint
+app.use("/api/v1/code", getCodeRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {
