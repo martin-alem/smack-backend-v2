@@ -27,5 +27,6 @@ export const config = {
   COOKIE_EXP: 5,
   CODE_LENGTH: 6,
   V_CODE_EXP: 5,
+  DEVICE_EXP: 1000,
   V_MSG: "your smack verification code",
 };

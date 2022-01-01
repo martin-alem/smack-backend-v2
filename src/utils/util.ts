@@ -6,20 +6,19 @@ export function getFormattedDate(): string {
   return `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
 }
 
-export function setCookie(res: Response, key: string, value: string) {
-  const cookie_expires: number = config.COOKIE_EXP;
+export function setCookie(res: Response, key: string, value: string, expiration: number) {
   res.cookie(key, value, {
-    expires: new Date(Date.now() + cookie_expires * 3600000),
+    expires: new Date(Date.now() + expiration * 3600000),
     httpOnly: true,
     domain: "localhost",
     sameSite: "lax",
   });
 }
 
-export function computeDateDiffInHours(date: string): number {
+export function computeDateDiff(date: string): number {
   const currentTime = new Date(Date.now()).getTime();
   const pastTime = new Date(date).getTime();
-  return Math.floor((currentTime - pastTime) / 3.6e6);
+  return currentTime - pastTime;
 }
 
 export function getCode(length: number): string {

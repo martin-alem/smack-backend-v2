@@ -5,10 +5,10 @@ import { GoogleUser, SmackUser } from "./../types/interfaces";
 import verify from "../utils/verifyToken.js";
 import UserModel from "../model/UserModel.js";
 import SettingModel from "../model/SettingModel.js";
-import { findOne} from "./../service/query.js";
+import { findOne } from "./../service/query.js";
 import { newUserTransaction } from "./../service/transaction.js";
 import jwt from "jsonwebtoken";
-import { setCookie, computeDateDiffInHours, getCode, sendResponse } from "./../utils/util.js";
+import { setCookie, computeDateDiff, getCode, sendResponse } from "./../utils/util.js";
 import sendSMS from "./../service/sendSMS.js";
 import { config, error_codes, response_code, success_codes } from "../utils/magic.js";
 import createVerificationRecord from "../service/createVerificationRecord.js";
@@ -62,14 +62,17 @@ async function handleExistingUser(smackUser: SmackUser, req: Request, res: Respo
     const is2FA = findSettingResult.get("settings")["twoFA"] as boolean;
     if (!is2FA) {
       const accessToken = generateAccessToken(userId);
-      setCookie(res, "_access_token", accessToken);
+      setCookie(res, "_access_token", accessToken, config.COOKIE_EXP);
       sendResponse(res, "success", response_code.SUCCESS, smackUser, success_codes.SLP);
     } else {
-      const device = req.cookies["device"];
+      const device = req.cookies["_trusted_device"];
       if (!device) {
         const lastLoggedIn = smackUser.twoFA.lastLoggedIn.toString();
-        const diff = computeDateDiffInHours(lastLoggedIn);
-        if (diff <= config.LOGIN_DURATION) {
+        const diff = computeDateDiff(lastLoggedIn);
+        const diffInHours = Math.floor(diff / 3.6e6);
+        if (diffInHours <= config.LOGIN_DURATION) {
+          const accessToken = generateAccessToken(userId);
+          setCookie(res, "_access_token", accessToken, config.COOKIE_EXP);
           sendResponse(res, "success", response_code.SUCCESS, smackUser, success_codes.SLP);
           return;
         }
@@ -96,7 +99,7 @@ async function handleNewUser(googleUser: GoogleUser, res: Response, next: NextFu
 
   if (newUser) {
     const accessToken = generateAccessToken(newUser[0]["_id"]);
-    setCookie(res, "_access_token", accessToken);
+    setCookie(res, "_access_token", accessToken, config.COOKIE_EXP);
     sendResponse(res, "success", response_code.CREATED, newUser[0], success_codes.SLP);
   } else {
     Logger.log("Internal server error", new Error("Could not create new user"), import.meta.url);
@@ -108,6 +111,8 @@ async function handleNewUser(googleUser: GoogleUser, res: Response, next: NextFu
 async function handleTrustedDevice(smackUser: SmackUser, device: string, res: Response, next: NextFunction): Promise<void> {
   const userDevices = smackUser.twoFA.devices;
   if (userDevices.includes(device)) {
+    const accessToken = generateAccessToken(smackUser._id);
+    setCookie(res, "_access_token", accessToken, config.COOKIE_EXP);
     sendResponse(res, "success", response_code.SUCCESS, smackUser, success_codes.SLP);
   } else {
     const verificationCode = getCode(config.CODE_LENGTH);
