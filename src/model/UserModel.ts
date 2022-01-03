@@ -28,17 +28,6 @@ const UserSchema = new mongoose.Schema({
     required: false,
     default: "",
   },
-  twoFA: {
-    lastLoggedIn: {
-      type: Date,
-      required: false,
-      default: new Date("January 1 1970 00:00:00"),
-    },
-    devices: {
-      type: [],
-      required: false,
-    },
-  },
   dateJoined: {
     type: Date,
     required: true,
