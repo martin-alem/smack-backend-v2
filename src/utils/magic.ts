@@ -13,6 +13,9 @@ export const error_codes = {
   EBR: "EBR", // Bad request
   EUA: "EUA", // Unauthorized user
   ESE: "ESE", // internal server error
+  ECE: "ECE", // code expired
+  EIP: "EIP", //invalid phoneNumber
+  EIC: "EIC", // invalid code
 };
 
 export const success_codes = {

@@ -15,7 +15,6 @@ async function getCodeController(req: Request, res: Response, next: NextFunction
     const smsResult = await sendSMS(phoneNumber, message);
     if (!smsResult.error && smsResult.status === "success") {
       await createVerificationRecord(userId, phoneNumber, code, res, next);
-      sendResponse(res, "success", response_code.NO_CONTENT, null, success_codes.SSR);
     } else {
       next(new ErrorHandler("Unable to send verification code", response_code.INTERNAL_SERVER_ERROR, error_codes.ESE));
     }
