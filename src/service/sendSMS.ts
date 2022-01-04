@@ -24,7 +24,7 @@ async function sendSMS(recipientPhone: string, message: string): Promise<SMSStat
       from: twilio.number,
       to: recipientPhone,
     });
-    Logger.log("info", new Error("SMS sent successfully"), import.meta.url);
+    Logger.log("info", { message: "SMS sent successfully" }, import.meta.url);
     return { error: null, status: "success" };
   } catch (error) {
     Logger.log("error", error as Error, import.meta.url);

@@ -1,6 +1,18 @@
 import mongoose from "mongoose";
 
 const FriendSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  picture: {
+    type: String,
+    required: true,
+  },
   friendId: {
     type: mongoose.Types.ObjectId,
     required: true,
@@ -10,9 +22,8 @@ const FriendSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  userId: {
-    type: mongoose.Types.ObjectId,
+  dateJoined: {
+    type: Date,
     required: true,
   },
 

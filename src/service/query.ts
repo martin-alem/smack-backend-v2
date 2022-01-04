@@ -1,5 +1,5 @@
 import Logger from "./../utils/Logger.js";
-import mongoose, { ClientSession, Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export async function findOne(model: mongoose.Model<any, {}, {}, {}>, query: { [key: string]: any }): Promise<Document | undefined> {
   try {
@@ -11,9 +11,14 @@ export async function findOne(model: mongoose.Model<any, {}, {}, {}>, query: { [
   }
 }
 
-export async function findAll(model: mongoose.Model<any, {}, {}, {}>): Promise<Document[] | undefined> {
+export async function findAll(
+  model: mongoose.Model<any, {}, {}, {}>,
+  filter: { [key: string]: RegExp }[],
+  projection: { [key: string]: any } | null,
+  options: { [key: string]: any } | null
+): Promise<Document[] | undefined> {
   try {
-    const document: Document[] = await model.find({});
+    const document = await model.find({ $or: filter }, projection, options);
     return document;
   } catch (error) {
     Logger.log("Error", error as Error, import.meta.url);

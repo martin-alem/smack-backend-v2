@@ -10,6 +10,8 @@ import authorizeRouter from "./routes/authorizeRoute.js";
 import settingRouter from "./routes/settingRoute.js";
 import getCodeRouter from "./routes/getCodeRoute.js";
 import enableTFARouter from "./routes/enableTFARoute.js";
+import friendsRouter from "./routes/friendsRoute.js";
+import userRouter from "./routes/userRoute.js";
 
 dotenv.config();
 
@@ -48,6 +50,12 @@ app.use("/api/v1/code", getCodeRouter);
 
 //Two factor Authentication endpoint
 app.use("/api/v1/twoFA", enableTFARouter);
+
+//Friends endpoint
+app.use("/api/v1/friends", friendsRouter);
+
+//User endpoint
+app.use("/api/v1/user", userRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {

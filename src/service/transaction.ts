@@ -2,7 +2,7 @@ import Logger from "./../utils/Logger.js";
 import UserModel from "./../model/UserModel.js";
 import SettingModel from "./../model/SettingModel.js";
 import { createNotificationCollection } from "./../model/NotificationModel.js";
-import { createFriendCollection } from "../model/FriendModal.js";
+import { createFriendCollection } from "../model/FriendModel.js";
 import connectToDatabase from "../database/connection.js";
 import { SmackUser } from "./../types/interfaces";
 

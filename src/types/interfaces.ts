@@ -16,3 +16,7 @@ export interface SmackUser {
   twoFA: { lastLoggedIn: Date; devices: string[] };
   dateJoined: Date;
 }
+
+export interface SMSSuccess {
+  message: string;
+}
