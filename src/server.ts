@@ -13,6 +13,7 @@ import enableTFARouter from "./routes/enableTFARoute.js";
 import friendsRouter from "./routes/friendsRoute.js";
 import userRouter from "./routes/userRoute.js";
 import peopleRouter from "./routes/peopleRoute.js";
+import notificationRouter from "./routes/notificationRoute.js";
 
 dotenv.config();
 
@@ -56,10 +57,13 @@ app.use("/api/v1/twoFA", enableTFARouter);
 app.use("/api/v1/friends", friendsRouter);
 
 //User endpoint
-app.use( "/api/v1/user", userRouter );
+app.use("/api/v1/user", userRouter);
 
 //People endpoint
 app.use("/api/v1/people", peopleRouter);
+
+//Notification endpoint
+app.use("/api/v1/notification", notificationRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {

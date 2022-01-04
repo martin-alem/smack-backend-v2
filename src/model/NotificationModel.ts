@@ -1,8 +1,23 @@
 import mongoose from "mongoose";
 
 const NotificationSchema = new mongoose.Schema({
-  sender: {
+  senderId: {
     type: mongoose.Types.ObjectId,
+    required: true,
+  },
+
+  firstName: {
+    type: String,
+    required: true,
+  },
+
+  lastName: {
+    type: String,
+    required: true,
+  },
+
+  picture: {
+    type: String,
     required: true,
   },
 
@@ -16,7 +31,7 @@ const NotificationSchema = new mongoose.Schema({
     required: true,
   },
 
-  recipient: {
+  recipientId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
