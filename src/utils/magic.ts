@@ -16,6 +16,7 @@ export const error_codes = {
   ECE: "ECE", // code expired
   EIP: "EIP", //invalid phoneNumber
   EIC: "EIC", // invalid code
+  ENF: "ENF", // not found
 };
 
 export const success_codes = {
