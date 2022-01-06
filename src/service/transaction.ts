@@ -58,9 +58,7 @@ export async function handleSentFriendRequest(
   notification: { [key: string]: any },
   friendFriendModel: mongoose.Model<any, {}, {}>,
   userFriendModel: mongoose.Model<any, {}, {}>,
-  friendNotificationModel: mongoose.Model<any, {}, {}>,
-  userLastName: string,
-  friendLastName: string
+  friendNotificationModel: mongoose.Model<any, {}, {}>
 ): Promise<boolean | undefined> {
   try {
     const conn = await connectToDatabase();
@@ -73,6 +71,41 @@ export async function handleSentFriendRequest(
       const result3 = await friendNotificationModel.create([notification], { session });
 
       if (result1 && result2 && result3) {
+        result = true;
+      }
+    });
+    session.endSession();
+    return result;
+  } catch (error) {
+    Logger.log("error", error as Error, import.meta.url);
+    return undefined;
+  }
+}
+
+export async function handleAcceptFriendRequest(
+  userId: string,
+  friendId: string,
+  updateInfo: { [key: string]: any },
+  notification: { [key: string]: any },
+  friendFriendModel: mongoose.Model<any, {}, {}>,
+  userFriendModel: mongoose.Model<any, {}, {}>,
+  friendNotificationModel: mongoose.Model<any, {}, {}>,
+  userNotificationModel: mongoose.Model<any, {}, {}>,
+  userLastName: string,
+  friendLastName: string
+): Promise<any> {
+  try {
+    const conn = await connectToDatabase();
+    const session = await conn.startSession();
+    let result = false;
+
+    await session.withTransaction(async () => {
+      const result1 = await userFriendModel.findOneAndUpdate({ friendId: friendId }, updateInfo, { session });
+      const result2 = await friendFriendModel.findOneAndUpdate({ friendId: userId }, updateInfo, { session });
+      const result3 = await friendNotificationModel.create([notification], { session });
+      const result4 = await userNotificationModel.findOneAndDelete({ recipientId: userId }, { session });
+
+      if (result1 && result2 && result3 && result4) {
         const chatCollectionName = `${userLastName}_${friendLastName}_chat`;
         createChatCollection(chatCollectionName);
         result = true;
