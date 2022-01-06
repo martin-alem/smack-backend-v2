@@ -103,11 +103,43 @@ export async function handleAcceptFriendRequest(
       const result1 = await userFriendModel.findOneAndUpdate({ friendId: friendId }, updateInfo, { session });
       const result2 = await friendFriendModel.findOneAndUpdate({ friendId: userId }, updateInfo, { session });
       const result3 = await friendNotificationModel.create([notification], { session });
-      const result4 = await userNotificationModel.findOneAndDelete({ recipientId: userId }, { session });
+      const result4 = await userNotificationModel.findOneAndDelete({ recipientId: userId, notificationType: "friend_request" }, { session });
 
       if (result1 && result2 && result3 && result4) {
         const chatCollectionName = `${userLastName}_${friendLastName}_chat`;
         createChatCollection(chatCollectionName);
+        result = true;
+      }
+    });
+    session.endSession();
+    return result;
+  } catch (error) {
+    Logger.log("error", error as Error, import.meta.url);
+    return undefined;
+  }
+}
+
+export async function handleRejectFriendRequest(
+  userId: string,
+  friendId: string,
+  notification: { [key: string]: any },
+  friendFriendModel: mongoose.Model<any, {}, {}>,
+  userFriendModel: mongoose.Model<any, {}, {}>,
+  friendNotificationModel: mongoose.Model<any, {}, {}>,
+  userNotificationModel: mongoose.Model<any, {}, {}>
+): Promise<any> {
+  try {
+    const conn = await connectToDatabase();
+    const session = await conn.startSession();
+    let result = false;
+
+    await session.withTransaction(async () => {
+      const result1 = await userFriendModel.findOneAndDelete({ friendId: friendId }, { session });
+      const result2 = await friendFriendModel.findOneAndDelete({ friendId: userId }, { session });
+      const result3 = await friendNotificationModel.create([notification], { session });
+      const result4 = await userNotificationModel.findOneAndDelete({ recipientId: userId, notificationType: "friend_request" }, { session });
+
+      if (result1 && result2 && result3 && result4) {
         result = true;
       }
     });
