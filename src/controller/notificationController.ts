@@ -6,6 +6,7 @@ import Logger from "../utils/Logger.js";
 import { findAll } from "../service/query.js";
 import { getNotificationModel } from "../model/NotificationModel.js";
 import getUserLastName from "../service/getUserLastName.js";
+import UserModel from "../model/UserModel.js";
 
 async function notificationController(req: Request, res: Response, next: NextFunction) {
   try {
@@ -17,7 +18,13 @@ async function notificationController(req: Request, res: Response, next: NextFun
     if (typeof userLastName !== "string") return next(new ErrorHandler("Unauthorized user", response_code.UNAUTHORIZED, error_codes.EUA));
     const collectionName = `${userLastName.toLowerCase()}_notifications`;
     const NotificationModel = getNotificationModel(collectionName);
-    const result = await findAll(NotificationModel, [{}], null, { skip: rowOffset, limit: rowLimit, sort: { date: -1 } });
+    /**
+     * Find all documents
+     * skip and limit options added for pagination
+     * Sort the result by newest date
+     * The friendId field is populated with data from users collection
+     */
+    const result = await NotificationModel.find({}, null, { skip: rowOffset, limit: rowLimit, sort: { date: -1 } }).populate("senderId", null, UserModel);
     if (!result) return next(new ErrorHandler("Unauthorized user", response_code.UNAUTHORIZED, error_codes.EUA));
     const totalNotification = await NotificationModel.count({});
     const length = result.length;

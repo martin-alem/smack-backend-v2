@@ -6,18 +6,8 @@ const NotificationSchema = new mongoose.Schema({
     required: true,
   },
 
-  firstName: {
-    type: String,
-    required: true,
-  },
-
-  lastName: {
-    type: String,
-    required: true,
-  },
-
-  picture: {
-    type: String,
+  recipientId: {
+    type: mongoose.Types.ObjectId,
     required: true,
   },
 
@@ -28,11 +18,6 @@ const NotificationSchema = new mongoose.Schema({
 
   body: {
     type: String,
-    required: true,
-  },
-
-  recipientId: {
-    type: mongoose.Types.ObjectId,
     required: true,
   },
 
