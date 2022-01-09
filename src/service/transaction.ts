@@ -6,7 +6,7 @@ import { createNotificationCollection } from "./../model/NotificationModel.js";
 import { createFriendCollection } from "../model/FriendModel.js";
 import connectToDatabase from "../database/connection.js";
 import { SmackUser } from "./../types/interfaces";
-import { createChatCollection } from "../model/ChatModel.js";
+import { createMessageCollection } from "../model/MessageModel.js";
 import { uniqueCombination } from "../utils/util.js";
 
 export async function newUserTransaction(gUser: { [key: string]: any }): Promise<SmackUser[] | undefined> {
@@ -107,8 +107,8 @@ export async function handleAcceptFriendRequest(
       const result4 = await userNotificationModel.findOneAndDelete({ recipientId: userId, notificationType: "friend_request" }, { session });
 
       if (result1 && result2 && result3 && result4) {
-        const chatCollectionName = `${uniqueCombination(userLastName, friendLastName)}_chats`;
-        createChatCollection(chatCollectionName);
+        const messageCollectionName = `${uniqueCombination(userLastName, friendLastName)}_messages`;
+        createMessageCollection(messageCollectionName);
         result = true;
       }
     });

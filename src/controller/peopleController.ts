@@ -17,11 +17,7 @@ async function peopleController(req: Request, res: Response, next: NextFunction)
      * Selects firstName, lastName, picture and dateJoined field.
      * Performs a skip and limit for pagination
      */
-    const result = await UserModel.find(
-      { $or: [{ firstName: regex }, { lastName: regex }] },
-      { firstName: 1, lastName: 1, picture: 1, dateJoined: 1},
-      { skip: rowOffset, limit: rowLimit }
-    );
+    const result = await UserModel.find({ $or: [{ firstName: regex }, { lastName: regex }] }, { firstName: 1, lastName: 1, picture: 1, dateJoined: 1, email: 1 }, { skip: rowOffset, limit: rowLimit });
     if (!result) return next(new ErrorHandler("Unauthorized user", response_code.UNAUTHORIZED, error_codes.EUA));
     const totalPeople = await UserModel.count({});
     const length = result.length;

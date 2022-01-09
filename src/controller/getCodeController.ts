@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { config, error_codes, response_code, success_codes } from "../utils/magic.js";
-import { getCode, sendResponse } from "../utils/util.js";
+import { config, error_codes, response_code} from "../utils/magic.js";
+import { getCode} from "../utils/util.js";
 import ErrorHandler from "./../utils/ErrorHandler.js";
 import Logger from "./../utils/Logger.js";
 import sendSMS from "./../service/sendSMS.js";

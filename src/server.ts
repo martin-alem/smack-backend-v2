@@ -15,6 +15,7 @@ import userRouter from "./routes/userRoute.js";
 import peopleRouter from "./routes/peopleRoute.js";
 import notificationRouter from "./routes/notificationRoute.js";
 import friendRequestRouter from "./routes/friendRequestRoute.js";
+import chatRouter from "./routes/chatRouter.js";
 
 dotenv.config();
 
@@ -67,7 +68,10 @@ app.use("/api/v1/people", peopleRouter);
 app.use("/api/v1/notification", notificationRouter);
 
 //Friend request endpoint
-app.use("/api/v1/friend_request/", friendRequestRouter);
+app.use( "/api/v1/friend_request/", friendRequestRouter );
+
+//Chat summary endpoint
+app.use( "/api/v1/chats", chatRouter)
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {

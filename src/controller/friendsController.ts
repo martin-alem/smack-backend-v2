@@ -4,7 +4,6 @@ import { sendResponse } from "../utils/util.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import Logger from "../utils/Logger.js";
 import { getFriendModel } from "./../model/FriendModel.js";
-import { findAll } from "../service/query.js";
 import getUserLastName from "../service/getUserLastName.js";
 import UserModel from "../model/UserModel.js";
 

@@ -20,3 +20,17 @@ export interface SmackUser {
 export interface SMSSuccess {
   message: string;
 }
+
+export enum MessageType {
+  TEXT = "text",
+  AUDIO = "audio",
+  ATTACHMENT = "attachment",
+  IMAGE = "image",
+  MIX = "mix",
+}
+
+export enum MessageStatus {
+  SENT = "sent",
+  DELIVERED = "delivered",
+  SEEN = "seen",
+}
