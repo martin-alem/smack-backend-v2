@@ -20,7 +20,7 @@ const MessageSchema = new mongoose.Schema({
   },
 
   media: {
-    type: [String],
+    type: [{ mediaType: { type: String, required: true }, mediaURL: { type: String, required: true } }],
     required: false,
   },
 
@@ -33,6 +33,7 @@ const MessageSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+
   status: {
     type: String,
     required: true,

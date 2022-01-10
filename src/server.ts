@@ -1,5 +1,7 @@
 import express, { Request, Response, Express } from "express";
 import connectionToDatabase from "./database/connection.js";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -16,6 +18,10 @@ import peopleRouter from "./routes/peopleRoute.js";
 import notificationRouter from "./routes/notificationRoute.js";
 import friendRequestRouter from "./routes/friendRequestRoute.js";
 import chatRouter from "./routes/chatRouter.js";
+import messagesRouter from "./routes/messagesRoute.js";
+
+import privateChat from "./socket/privateChat.js";
+import assignRoom from "./socket/assignRoom.js";
 
 dotenv.config();
 
@@ -36,6 +42,25 @@ app.use(cookieParser());
 app.enable("trust proxy");
 app.use(cors(corsOptions));
 app.use(express.json());
+
+//Setting up socket IO server
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "DELETE", "OPTIONS", "PUT"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  },
+});
+
+const onConnection = (socket: Socket) => {
+  assignRoom(io, socket);
+  privateChat(io, socket);
+};
+
+io.on("connection", onConnection);
 
 //Login endpoint
 app.use("/api/v1/login", loginRouter);
@@ -68,10 +93,13 @@ app.use("/api/v1/people", peopleRouter);
 app.use("/api/v1/notification", notificationRouter);
 
 //Friend request endpoint
-app.use( "/api/v1/friend_request/", friendRequestRouter );
+app.use("/api/v1/friend_request/", friendRequestRouter);
 
 //Chat summary endpoint
-app.use( "/api/v1/chats", chatRouter)
+app.use( "/api/v1/chats", chatRouter );
+
+//Message endpoint
+app.use( "/api/v1/messages", messagesRouter)
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {
@@ -90,6 +118,6 @@ app.all("*", (req: Request, res: Response) => {
 });
 
 const PORT: string = process.env.PORT || `4000`;
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server Listening On Port ${PORT}`);
 });
