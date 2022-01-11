@@ -7,7 +7,7 @@ import { sendResponse, uniqueCombination } from "../utils/util.js";
 import ErrorHandler from "./../utils/ErrorHandler.js";
 import Logger from "./../utils/Logger.js";
 
-async function logoutController(req: Request, res: Response, next: NextFunction) {
+async function getMessagesController(req: Request, res: Response, next: NextFunction) {
   try {
     const { userId, friendId } = req.params;
     const { limit, offset } = req.query;
@@ -39,4 +39,4 @@ async function logoutController(req: Request, res: Response, next: NextFunction)
   }
 }
 
-export default logoutController;
+export default getMessagesController;

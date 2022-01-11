@@ -3,6 +3,7 @@ import { getMessageModel } from "../model/MessageModel.js";
 import { Document } from "mongoose";
 import { uniqueCombination } from "../utils/util.js";
 import { MessageStatus } from "../types/interfaces.js";
+import UserModel from "../model/UserModel.js";
 
 function privateChat(io: Server, socket: Socket) {
   socket.on("message", async payload => {
@@ -19,7 +20,7 @@ function privateChat(io: Server, socket: Socket) {
     };
     const messageSaved = await saveMessage(sender.lastName, recipient.lastName, messagePayload);
     if (messageSaved) {
-      socket.broadcast.to(recipient.userId).emit("incoming_message", { sender, message });
+      socket.broadcast.to(recipient.userId).emit("incoming_message", messageSaved);
       io.to(sender.userId).emit("send_response", messageSaved);
     } else {
       io.to(sender.userId).emit("send_error", { status: fail, error: "could not send message" });
@@ -44,7 +45,9 @@ async function saveMessage(senderLastName: string, recipientLastName: string, pa
 
     const result: Document[] = await MessageModel.insertMany([message], { ordered: true, rawResult: false });
     if (!result) return false;
-    return result[0];
+    const messageId = result[0]._id;
+    const result2 = await MessageModel.find({ _id: messageId }).populate("senderId", null, UserModel).populate("recipientId", null, UserModel);
+    return result2[0];
   } catch (error) {
     return false;
   }
