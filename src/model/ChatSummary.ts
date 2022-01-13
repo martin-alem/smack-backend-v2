@@ -5,16 +5,20 @@ const ChatSummarySchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     required: true,
   },
-
   recipientId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
-
-  lastMessageId: {
-    type: mongoose.Types.ObjectId,
+  messageType: {
+    type: String,
     required: true,
   },
+
+  text: {
+    type: String,
+    required: true,
+  },
+
   date: {
     type: Date,
     required: true,

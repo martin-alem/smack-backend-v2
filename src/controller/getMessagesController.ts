@@ -23,11 +23,11 @@ async function getMessagesController(req: Request, res: Response, next: NextFunc
      * The query populates the senderId and recipientId fields with data from the userModel
      * skip and limit parameters are used for pagination
      */
-    const result = await MessageModel.find({}, null, { skip: rowOffset, limit: rowLimit, sort: { date: 1 } })
+    const result = await MessageModel.find({}, null, { skip: rowOffset, limit: rowLimit, sort: { date: -1 } })
       .populate("senderId", null, UserModel)
       .populate("recipientId", null, UserModel);
 
-    if (!result) return next(new ErrorHandler("Unauthorized user", response_code.UNAUTHORIZED, error_codes.EUA));
+    if (!result.length) return next(new ErrorHandler("Unauthorized user", response_code.UNAUTHORIZED, error_codes.EUA));
     const totalMessages = await MessageModel.count({});
     const length = result.length;
     const remaining = totalMessages - (rowOffset + length);
