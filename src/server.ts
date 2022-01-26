@@ -22,6 +22,8 @@ import messagesRouter from "./routes/messagesRoute.js";
 
 import privateChat from "./socket/privateChat.js";
 import assignRoom from "./socket/assignRoom.js";
+import notification from "./socket/notification.js";
+import call from "./socket/call.js";
 
 dotenv.config();
 
@@ -58,6 +60,8 @@ const io = new Server(httpServer, {
 const onConnection = (socket: Socket) => {
   assignRoom(io, socket);
   privateChat(io, socket);
+  notification(io, socket);
+  call(io, socket);
 };
 
 io.on("connection", onConnection);
@@ -96,10 +100,10 @@ app.use("/api/v1/notification", notificationRouter);
 app.use("/api/v1/friend_request/", friendRequestRouter);
 
 //Chat summary endpoint
-app.use( "/api/v1/chats", chatRouter );
+app.use("/api/v1/chats", chatRouter);
 
 //Message endpoint
-app.use( "/api/v1/messages", messagesRouter)
+app.use("/api/v1/messages", messagesRouter);
 
 //Ping routes to check server status
 app.get("/api/ping", (req: Request, res: Response) => {
